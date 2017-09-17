@@ -1,0 +1,5 @@
+name: DynamicServerCreation
+version: ${project.version}
+main: com.nickdoran.bungee.dynamicservercreation.DynamicServerCreation
+description: DynamicServerCreation
+author: Nick
