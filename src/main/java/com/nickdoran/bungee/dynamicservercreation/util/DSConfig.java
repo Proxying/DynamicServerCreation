@@ -18,6 +18,7 @@ public final class DSConfig {
     private Plugin plugin;
     private File dataFolder;
     private File configFile;
+    private String configName;
     private Configuration configuration;
 
     /**
@@ -27,12 +28,13 @@ public final class DSConfig {
     public DSConfig(Plugin plugin, String configName) {
         this.plugin = plugin;
         this.dataFolder = getPlugin().getDataFolder();
+        this.configName = configName;
         this.configFile = new File(getDataFolder(), configName);
     }
 
     /**
      * Checks for dataFolder, creates if doesn't exist.
-     * Checks for config.yml, creates if doesn't exist.
+     * Checks for config, creates if doesn't exist.
      */
     public void loadConfig() {
         try {
@@ -42,24 +44,24 @@ public final class DSConfig {
                 //Therefore, our config.yml wasn't generated and we cannot get database credentials.
                 if (!ok) {
                     //Alert console of the severe.
-                    getPlugin().getLogger().severe("Unable to create `DynamicServerCreation` folder inside `Plugins`!");
+                    getPlugin().getLogger().severe("Unable to create `" + getPlugin().getDataFolder() + "` folder inside `Plugins`!");
                     //Disable the plugin.
                     getPlugin().onDisable();
                     return;
                 }
             }
-            //Check if `config.yml` exist.
+            //Check if `config` exist.
             if (!configFile.exists()) {
-                //If it does, print to console we've found `config.yml`.
-                getPlugin().getLogger().info("The `config.yml` was not found, creating it now!");
-                //Copy the defaults inside of `config.yml`.
-                try (InputStream in = getPlugin().getResourceAsStream("config.yml")) {
+                //If it does, print to console we've found `config`.
+                getPlugin().getLogger().info("The `" + getConfigName() + "` was not found, creating it now!");
+                //Copy the defaults inside of `config`.
+                try (InputStream in = getPlugin().getResourceAsStream(getConfigName())) {
                     Files.copy(in, configFile.toPath());
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             } else {
-                getPlugin().getLogger().info("Found `config.yml`, loading the configuration..");
+                getPlugin().getLogger().info("Found `" + getConfigName() + "`, loading the configuration..");
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -86,12 +88,16 @@ public final class DSConfig {
         return configFile;
     }
 
+    public String getConfigName() {
+        return configName;
+    }
+
     public Configuration getConfiguration() {
         return configuration;
     }
 
     /**
-     * Saves the config.yml.
+     * Saves the config.
      */
     public void saveConfig() {
         try {
