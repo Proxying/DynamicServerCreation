@@ -1,6 +1,7 @@
 package com.nickdoran.bungee.dynamicservercreation.commands;
 
 import com.google.common.net.InetAddresses;
+import com.nickdoran.bungee.dynamicservercreation.DscAPI;
 import com.nickdoran.bungee.dynamicservercreation.DynamicServer;
 import com.nickdoran.bungee.dynamicservercreation.DynamicServerCreation;
 import net.md_5.bungee.api.CommandSender;
@@ -45,15 +46,7 @@ public class CommandDSC extends Command {
                     sender.sendMessage(new ComponentBuilder("The port you entered is not numerical!").create());
                     return;
                 }
-                DynamicServer dynamicServer = new DynamicServer(serverName, serverType, InetAddresses.forString(ip), port);
-                sender.sendMessage(new ComponentBuilder(dynamicServer.getServerName() + " " +
-                        dynamicServer.getServerType() + " " +
-                        dynamicServer.getInetAddress().getHostAddress() + " " +
-                        dynamicServer.getPort()
-                ).create());
-
-                dynamicServer.injectToProxy();
-                DynamicServerCreation.getInstance().addDynamicServer(dynamicServer);
+                DscAPI.registerServer(serverName, serverType, ip, port);
             }
         }
 
